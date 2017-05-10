@@ -3,6 +3,8 @@
   var jQuery;
 
   if (window.jQuery === undefined) {
+    console.log("jquery was not found");
+
     var script_tag = document.createElement('script');
     script_tag.setAttribute("type","text/javascript");
     script_tag.setAttribute("src",
@@ -19,6 +21,7 @@
     // Try to find the head, otherwise default to the documentElement
     (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
   } else {
+    console.log("jquery was found");
     // The jQuery version on the window is the one we want to use
     jQuery = window.jQuery;
     main();
@@ -42,11 +45,34 @@
         // });
         // css_link.appendTo('head');          
 
-        var api_url = "http://api.bubble-tutorial.com/v1/sites/1/tutorials";
+        var api_url = "http://api.stevenlocal.com:3000/v1/sites/1/tutorials";
         $.getJSON(api_url, function(data) {
-          //do stuff with data here
+          //data['data'][0]['attributes'].name;
+
+          if (data['data'].length === 0) {
+            console.log("data member is empty; no tutorials");
+            return;
+          }
+
+          parseTutorialData(data);
         });
     });
+  }
+
+  function parseTutorialData(data) {
+    var dataArray = data['data'];
+    var includedArray = data['included'];
+
+    if (includedArray.length === 0) {
+      console.log("included member is empty; no tutorial items");
+      return;
+    }
+
+    var tutorialsArray = [];
+
+    for (i = 0; i < dataArray.length; i++) {
+      
+    }
   }
 
 })();
