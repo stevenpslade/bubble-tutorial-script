@@ -35,6 +35,26 @@
     main(); 
   }
 
+  /* TUTORIAL PUBLIC CLASS DEFINITION
+  * =============================== */
+
+  var Tutorial = function(options) {
+    this.init('tutorial', options);
+  }
+
+  Tutorial.prototype = {
+
+    constructor: Tutorial,
+
+    init: function(type, options) {
+      this.type = type;
+      this.options = options;
+
+      console.log(this.options.name);
+    }
+    
+  }
+
   function main() { 
     jQuery(document).ready(function($) { 
         /******* Load CSS *******/
@@ -63,15 +83,24 @@
     var dataArray = data['data'];
     var includedArray = data['included'];
 
+    console.log(includedArray[0]['attributes']);
+
     if (includedArray.length === 0) {
       console.log("included member is empty; no tutorial items");
       return;
     }
 
     var tutorialsArray = [];
+    var tutorialItemsArray = [];
 
+
+    /*
+    In this loop, I will be making each peice of the response into a Tutorial and Tutorial Object.
+    Probably this part could even but a new function.
+    I can have conditional flow here, like order and active?
+    */
     for (i = 0; i < dataArray.length; i++) {
-      
+      new Tutorial(dataArray[i]['attributes']);
     }
   }
 
