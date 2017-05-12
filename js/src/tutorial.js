@@ -54,6 +54,24 @@
     
   }
 
+  /* TUTORIAL ITEM PUBLIC CLASS DEFINITION
+  * =============================== */
+
+  var TutorialItem = function(options) {
+    this.init('tutorialItem', options);
+  }
+
+  TutorialItem.prototype = {
+
+    constructor: TutorialItem,
+
+    init: function(type, options) {
+      this.type = type;
+      this.options = options;
+    }
+
+  }
+
   function main() { 
     jQuery(document).ready(function($) { 
         /******* Load CSS *******/
@@ -66,7 +84,6 @@
 
         var api_url = "http://api.stevenlocal.com:3000/v1/sites/1/tutorials";
         $.getJSON(api_url, function(data) {
-          //data['data'][0]['attributes'].name;
 
           if (data['data'].length === 0) {
             console.log("data member is empty; no tutorials");
@@ -101,7 +118,7 @@
           var relId = tutorialItemRelationships[t]['id'];
 
           if (relId === tutorialItemId) {
-            tutorial.tutorialItems.push(includedArray[j]['attributes']);
+            tutorial.tutorialItems.push(new TutorialItem(includedArray[j]['attributes']));
           }
         }
       }
