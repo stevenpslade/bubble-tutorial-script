@@ -49,8 +49,7 @@
     init: function(type, options) {
       this.type = type;
       this.options = options;
-
-      console.log(this.options.name);
+      this.tutorialItems = [];
     }
     
   }
@@ -74,7 +73,8 @@
             return;
           }
 
-          parseTutorialData(data);
+          var result = parseTutorialData(data);
+          console.log(result);
         });
     });
   }
@@ -83,25 +83,33 @@
     var dataArray = data['data'];
     var includedArray = data['included'];
 
-    console.log(includedArray[0]['attributes']);
-
     if (includedArray.length === 0) {
       console.log("included member is empty; no tutorial items");
       return;
     }
 
     var tutorialsArray = [];
-    var tutorialItemsArray = [];
 
-
-    /*
-    In this loop, I will be making each peice of the response into a Tutorial and Tutorial Object.
-    Probably this part could even but a new function.
-    I can have conditional flow here, like order and active?
-    */
     for (i = 0; i < dataArray.length; i++) {
-      new Tutorial(dataArray[i]['attributes']);
+      var tutorial = new Tutorial(dataArray[i]['attributes']);
+      var tutorialItemRelationships = dataArray[i]['relationships']['tutorial_items']['data'];
+
+      for (j = 0; j < includedArray.length; j++) {
+        var tutorialItemId = includedArray[j]['id'];
+
+        for (t = 0; t < tutorialItemRelationships.length; t++) {
+          var relId = tutorialItemRelationships[t]['id'];
+
+          if (relId === tutorialItemId) {
+            tutorial.tutorialItems.push(includedArray[j]['attributes']);
+          }
+        }
+      }
+
+      tutorialsArray.push(tutorial);
     }
+
+    return tutorialsArray;
   }
 
 })();
