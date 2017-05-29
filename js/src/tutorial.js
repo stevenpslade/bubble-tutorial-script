@@ -50,6 +50,24 @@
       this.type = type;
       this.options = options;
       this.tutorialItems = [];
+    },
+
+    start: function() {
+      if (!this.options.active) {
+        console.log(this.options.name + " is NOT active.");
+        return;
+      }
+
+      if (this.tutorialItems.length === 0) {
+        console.log(this.options.name + " has ZERO tutorial items.");
+        return;
+      } else {
+        this.stepThroughTutorialItems(this.tutorialItems);
+      }
+    },
+
+    stepThroughTutorialItems: function(tutorialItems) {
+
     }
     
   }
@@ -92,6 +110,11 @@
 
           var result = parseTutorialData(data);
           console.log(result);
+          //for testing
+          for (i = 0; i < result.length; i++) {
+            result[i].start();
+          }
+
         });
     });
   }
