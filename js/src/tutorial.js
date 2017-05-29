@@ -49,6 +49,7 @@
     init: function(type, options) {
       this.type = type;
       this.options = options;
+      this.tutorialItemIndex = 0;
       this.tutorialItems = [];
     },
 
@@ -62,12 +63,15 @@
         console.log(this.options.name + " has ZERO tutorial items.");
         return;
       } else {
-        this.stepThroughTutorialItems(this.tutorialItems);
+        this.initTutorialItem();
       }
     },
 
-    stepThroughTutorialItems: function(tutorialItems) {
+    initTutorialItem: function() {
+      var tutorialItems = this.tutorialItems;
+      var index = this.tutorialItemIndex;
 
+      tutorialItems[index].show();
     }
     
   }
@@ -86,6 +90,26 @@
     init: function(type, options) {
       this.type = type;
       this.options = options;
+      this.element = this.getElement();
+    },
+
+    show: function() {
+      console.log(this.element);
+    },
+
+    getElement: function() {
+      if (!this.options.css_selector) {
+        console.log("no css selector found");
+        return;
+      }
+
+      var $element = $(this.options.css_selector);
+
+      if ($element.length > 1) {
+        $element = $element.first();
+      }
+
+      return $element;
     }
 
   }
@@ -111,9 +135,7 @@
           var result = parseTutorialData(data);
           console.log(result);
           //for testing
-          for (i = 0; i < result.length; i++) {
-            result[i].start();
-          }
+          result[0].start();
 
         });
     });
