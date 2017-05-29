@@ -94,7 +94,8 @@
     },
 
     show: function() {
-      console.log(this.element);
+      var pos = this.getPosition(this.element[0]);
+      console.log(pos);
     },
 
     getElement: function() {
@@ -110,6 +111,21 @@
       }
 
       return $element;
+    },
+
+    getPosition: function(element) {
+      var position;
+      var elemRect = element.getBoundingClientRect();
+      position = {
+        top: elemRect.top + window.scrollY,
+        right: elemRect.right,
+        bottom: elemRect.bottom,
+        left: elemRect.left + window.scrollX,
+        Ymiddle: (elemRect.top + window.scrollY + elemRect.bottom) / 2,
+        Xmiddle: (elemRect.left + window.scrollX + elemRect.right) / 2
+      };
+
+      return position;
     }
 
   }
