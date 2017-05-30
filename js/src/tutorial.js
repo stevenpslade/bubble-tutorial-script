@@ -91,15 +91,18 @@
       this.type = type;
       this.options = options;
       this.element = this.getElement();
-      this.template = $('<div class="bubble"><div class="bubble-arrow"></div><div class="bubble-inner"></div></div>');
+      this.template = $('<div style="position: absolute;background-color: #151582;color: white;padding: .5em;" class="bubble"><div class="bubble-arrow"></div><div class="bubble-inner"></div></div>');
     },
 
     show: function() {
       var pos = this.getPosition(this.element[0]);
+      this.setPosition(pos);
 
       if (this.options.content) {
         this.setContent();
       }
+
+      $('body').append(this.template);
     },
 
     getElement: function() {
@@ -130,6 +133,11 @@
       };
 
       return position;
+    },
+
+    setPosition: function(pos) {
+      var $bubble = this.template;
+      $bubble.css({top: pos.Ymiddle, left: pos.right, display: 'block'});
     },
 
     setContent: function() {
