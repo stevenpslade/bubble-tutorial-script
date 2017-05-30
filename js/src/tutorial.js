@@ -91,11 +91,15 @@
       this.type = type;
       this.options = options;
       this.element = this.getElement();
+      this.template = $('<div class="bubble"><div class="bubble-arrow"></div><div class="bubble-inner"></div></div>');
     },
 
     show: function() {
       var pos = this.getPosition(this.element[0]);
-      console.log(pos);
+
+      if (this.options.content) {
+        this.setContent();
+      }
     },
 
     getElement: function() {
@@ -126,6 +130,12 @@
       };
 
       return position;
+    },
+
+    setContent: function() {
+      var $bubble = this.template;
+      var content = this.options.content;
+      $bubble.find('.bubble-inner')['text'](content);
     }
 
   }
