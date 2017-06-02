@@ -32,7 +32,7 @@
     // new jQuery in our local jQuery variable
     jQuery = window.jQuery.noConflict(true);
     // Call our main function
-    main(); 
+    main();
   }
 
   /* TUTORIAL PUBLIC CLASS DEFINITION
@@ -54,6 +54,8 @@
     },
 
     start: function() {
+      this.bindEvents();
+
       if (!this.options.active) {
         console.log(this.options.name + " is NOT active.");
         return;
@@ -71,7 +73,25 @@
       var tutorialItems = this.tutorialItems;
       var index = this.tutorialItemIndex;
 
-      tutorialItems[index].show();
+      if (index < tutorialItems.length - 1) {
+        tutorialItems[index].show(next = true);
+      } else {
+        tutorialItems[index].show();
+      }
+    },
+
+    nextTutorialItem: function() {
+      var tutorialItems = this.tutorialItems;
+      var index = this.tutorialItemIndex;
+
+      tutorialItems[index].hide();
+      this.tutorialItemIndex++
+
+      this.initTutorialItem();
+    },
+
+    bindEvents: function() {
+      $(document).on('click', '.bubble-action.action-next', this.nextTutorialItem.bind(this));
     }
     
   }
@@ -94,15 +114,20 @@
       this.template = $('<div style="position: absolute;background-color: #151582;color: white;padding: .5em;" class="bubble"><div class="bubble-arrow"></div><div class="bubble-inner"></div></div>');
     },
 
-    show: function() {
+    show: function(next = false) {
       var pos = this.getPosition(this.element[0]);
       this.setPosition(pos);
 
       if (this.options.content) {
-        this.setContent();
+        this.setContent(next);
       }
 
       $('body').append(this.template);
+    },
+
+    hide: function() {
+      var $bubble = this.template;
+      $bubble.detach();
     },
 
     getElement: function() {
@@ -140,10 +165,16 @@
       $bubble.css({top: pos.Ymiddle, left: pos.right, display: 'block'});
     },
 
-    setContent: function() {
+    setContent: function(next) {
       var $bubble = this.template;
       var content = this.options.content;
       $bubble.find('.bubble-inner')['text'](content);
+
+      //if there is a tutorial item that is next show this, otherwise, show nothing
+      if (next) {
+        var $actionBtn = '<div class="bubble-action action-next" style="background-color: #5959f7;width: 30%;text-align: center;float: right;">Next</div>';
+        $bubble.append($actionBtn);
+      }
     }
 
   }
@@ -170,7 +201,6 @@
           console.log(result);
           //for testing
           result[0].start();
-
         });
     });
   }
