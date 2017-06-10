@@ -131,8 +131,7 @@
       this.type = type;
       this.options = options;
       this.element = this.options.css_selector;
-      this.template = $('<div style="background-color: #151582;color: white;padding: .5em;" class="bubble">'
-                      + '<div class="bubble-arrow"></div><div class="bubble-inner"></div></div>');
+      this.template = $('<div class="bubble"><div class="bubble-arrow"></div><div class="bubble-inner"></div></div>');
     },
 
     show: function(next = false) {
@@ -145,6 +144,7 @@
         this.setContent(next);
       }
 
+      this.styleTemplate();
       $('body').append(this.template);
 
       var reference = document.querySelector(this.element);
@@ -173,12 +173,35 @@
 
       //if there is a tutorial item that is next show this, otherwise, show nothing
       if (next) {
-        var $actionBtn = '<div class="bubble-action action-next" style="background-color: #5959f7;width: 30%;text-align: center;float: right;">Next</div>';
+        var $actionBtn = '<div class="bubble-action action-next">Next</div>';
       } else {
-        var $actionBtn = '<div class="bubble-action action-close" style="background-color: #5959f7;width: 30%;text-align: center;float: right;">Close</div>';
+        var $actionBtn = '<div class="bubble-action action-close">Close</div>';
       }
 
       $bubble.append($actionBtn);
+    },
+
+    styleTemplate: function() {
+      var $bubble = this.template;
+      $bubble.css({
+        backgroundColor: '#187bd0',
+        color: 'white',
+        padding: '.8em 1.3em',
+        borderRadius: '.5em',
+        fontSize: '1.3em',
+        zIndex: '9999'
+      });
+
+      $bubble.find('.bubble-action').css({
+        backgroundColor: '#09375f',
+        padding: '.3em .7em',
+        borderRadius: '.3em',
+        fontWeight: '900',
+        textAlign: 'center',
+        float: 'right',
+        marginTop: '.5em',
+        cursor: 'pointer'
+      });
     }
 
   }
