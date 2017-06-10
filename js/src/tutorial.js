@@ -97,8 +97,21 @@
       this.initTutorialItem();
     },
 
+    finishTutorial: function() {
+      var tutorialItems = this.tutorialItems;
+      var index = this.tutorialItemIndex;
+
+      tutorialItems[index].hide();
+
+      stepThroughTutorials();
+    },
+
     bindEvents: function() {
+      //Next button action
       $(document).on('click', '.bubble-action.action-next', this.nextTutorialItem.bind(this));
+
+      //Close button action
+      $(document).on('click', '.bubble-action.action-close', this.finishTutorial.bind(this));
     }
     
   }
@@ -139,6 +152,9 @@
           modifiers: {
             preventOverflow: {
                 enabled: false
+            },
+            hide: {
+              enabled: false
             }
           },
         }
@@ -158,36 +174,26 @@
       //if there is a tutorial item that is next show this, otherwise, show nothing
       if (next) {
         var $actionBtn = '<div class="bubble-action action-next" style="background-color: #5959f7;width: 30%;text-align: center;float: right;">Next</div>';
-        $bubble.append($actionBtn);
+      } else {
+        var $actionBtn = '<div class="bubble-action action-close" style="background-color: #5959f7;width: 30%;text-align: center;float: right;">Close</div>';
       }
+
+      $bubble.append($actionBtn);
     }
 
   }
 
-  function main() { 
-    jQuery(document).ready(function($) { 
-        /******* Load CSS *******/
-        // var css_link = $("<link>", { 
-        //     rel: "stylesheet", 
-        //     type: "text/css", 
-        //     href: "style.css" 
-        // });
-        // css_link.appendTo('head');          
+  /* START OF DATA WRANGLING
+  * =============================== */
 
-        var api_url = "http://api.stevenlocal.com:3000/v1/sites/1/tutorials";
-        $.getJSON(api_url, function(data) {
+  var _tutorialsArray = null;
+  var _tutorialindex = 0;
 
-          if (data['data'].length === 0) {
-            console.log("data member is empty; no tutorials");
-            return;
-          }
-
-          var result = parseTutorialData(data);
-          console.log(result);
-          //for testing
-          result[0].start();
-        });
-    });
+  function stepThroughTutorials() {
+    if (_tutorialindex < _tutorialsArray.length) {
+      _tutorialsArray[_tutorialindex].start();
+      _tutorialindex++;
+    }
   }
 
   function parseTutorialData(data) {
@@ -221,6 +227,34 @@
     }
 
     return tutorialsArray;
+  }
+
+  function main() { 
+    jQuery(document).ready(function($) { 
+        /******* Load CSS *******/
+        // var css_link = $("<link>", { 
+        //     rel: "stylesheet", 
+        //     type: "text/css", 
+        //     href: "style.css" 
+        // });
+        // css_link.appendTo('head');          
+
+        var api_url = "http://api.stevenlocal.com:3000/v1/sites/1/tutorials";
+        $.getJSON(api_url, function(data) {
+
+          if (data['data'].length === 0) {
+            console.log("data member is empty; no tutorials");
+            return;
+          }
+
+          var result = parseTutorialData(data);
+          //console.log(result);
+          
+          _tutorialsArray = result;
+
+          stepThroughTutorials();
+        });
+    });
   }
 
 })();
