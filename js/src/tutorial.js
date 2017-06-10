@@ -131,7 +131,7 @@
       this.type = type;
       this.options = options;
       this.element = this.options.css_selector;
-      this.template = $('<div class="bubble"><div class="bubble-arrow"></div><div class="bubble-inner"></div></div>');
+      this.template = $('<div class="bubble"><div class="bubble-arrow" x-arrow></div><div class="bubble-inner"></div></div>');
     },
 
     show: function(next = false) {
@@ -144,11 +144,16 @@
         this.setContent(next);
       }
 
-      this.styleTemplate();
       $('body').append(this.template);
 
       var reference = document.querySelector(this.element);
       var popper = new Popper(reference, this.template[0], {
+          onCreate: (data) => {
+            //actions when popper created
+          },
+          onUpdate: (data) => {
+            //actions when popper updated
+          },
           modifiers: {
             preventOverflow: {
                 enabled: false
@@ -179,31 +184,7 @@
       }
 
       $bubble.append($actionBtn);
-    },
-
-    styleTemplate: function() {
-      var $bubble = this.template;
-      $bubble.css({
-        backgroundColor: '#187bd0',
-        color: 'white',
-        padding: '.8em 1.3em',
-        borderRadius: '.5em',
-        fontSize: '1.3em',
-        zIndex: '9999'
-      });
-
-      $bubble.find('.bubble-action').css({
-        backgroundColor: '#09375f',
-        padding: '.3em .7em',
-        borderRadius: '.3em',
-        fontWeight: '900',
-        textAlign: 'center',
-        float: 'right',
-        marginTop: '.5em',
-        cursor: 'pointer'
-      });
     }
-
   }
 
   /* START OF DATA WRANGLING
@@ -255,12 +236,12 @@
   function main() { 
     jQuery(document).ready(function($) { 
         /******* Load CSS *******/
-        // var css_link = $("<link>", { 
-        //     rel: "stylesheet", 
-        //     type: "text/css", 
-        //     href: "style.css" 
-        // });
-        // css_link.appendTo('head');          
+        var css_link = $("<link>", { 
+            rel: "stylesheet", 
+            type: "text/css", 
+            href: "../bubble_tutorial_script/style/tutorial.css" 
+        });
+        css_link.appendTo('head');          
 
         var api_url = "http://api.stevenlocal.com:3000/v1/sites/1/tutorials";
         $.getJSON(api_url, function(data) {
