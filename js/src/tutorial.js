@@ -131,7 +131,7 @@
       this.type = type;
       this.options = options;
       this.element = this.options.css_selector;
-      this.template = $('<div class="bubble"><div class="bubble-arrow" x-arrow></div><div class="bubble-inner"></div></div>');
+      this.template = $('<div class="bubble"><div class="bubble-arrow" x-arrow></div><div class="bubble-title"></div><div class="bubble-inner"></div></div>');
     },
 
     show: function(next = false) {
@@ -175,6 +175,11 @@
       var $bubble = this.template;
       var content = this.options.content;
       $bubble.find('.bubble-inner')['text'](content);
+
+      if (this.options.title) {
+        var title = this.options.title;
+        $bubble.find('.bubble-title')['text'](title);
+      }
 
       //if there is a tutorial item that is next show this, otherwise, show nothing
       if (next) {
@@ -255,7 +260,7 @@
           //console.log(result);
           
           _tutorialsArray = result;
-
+          console.log(_tutorialsArray);
           stepThroughTutorials();
         });
     });

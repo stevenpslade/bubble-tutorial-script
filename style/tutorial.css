@@ -8,6 +8,11 @@
   position: absolute;
 }
 
+.bubble .bubble-title {
+  font-weight: 900;
+  font-size: 1.2em;
+}
+
 .bubble .bubble-action {
   background-color: rgb(9, 55, 95);
   padding: 0.3em 0.7em;
@@ -34,7 +39,7 @@
   border-left-color: transparent;
   border-right-color: transparent;
   border-bottom-color: transparent;
-  bottom: -17%;
+  bottom: -14%;
 }
 
 .bubble[x-placement^="right"] .bubble-arrow {
@@ -50,7 +55,7 @@
   border-left-color: transparent;
   border-top-color: transparent;
   border-right-color: transparent;
-  top: -17%;
+  top: -14%;
 }
 
 .bubble[x-placement^="left"] .bubble-arrow {
@@ -58,6 +63,6 @@
   border-bottom-color: transparent;
   border-top-color: transparent;
   border-right-color: transparent;
-  right: -17%;
+  right: -14%;
   top: calc(50% - 5px);
 }
