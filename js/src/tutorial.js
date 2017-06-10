@@ -1,38 +1,45 @@
 (function() {
+  var head = document.getElementsByTagName('head')[0];
+  var popperScript = document.createElement('script');
+  popperScript.src = 'https://unpkg.com/popper.js';
+  popperScript.onload = loadJquery;
+  head.appendChild(popperScript);
 
-  var jQuery;
+  function loadJquery() {
+    var jQuery;
+    if (window.jQuery === undefined) {
+      console.log("jquery was not found");
 
-  if (window.jQuery === undefined) {
-    console.log("jquery was not found");
-
-    var script_tag = document.createElement('script');
-    script_tag.setAttribute("type","text/javascript");
-    script_tag.setAttribute("src",
-        "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js");
-    if (script_tag.readyState) {
-      script_tag.onreadystatechange = function () { // For old versions of IE
-          if (this.readyState == 'complete' || this.readyState == 'loaded') {
-              scriptLoadHandler();
-          }
-      };
+      var script_tag = document.createElement('script');
+      script_tag.setAttribute("type","text/javascript");
+      script_tag.setAttribute("src",
+          "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js");
+      if (script_tag.readyState) {
+        script_tag.onreadystatechange = function () { // For old versions of IE
+            if (this.readyState == 'complete' || this.readyState == 'loaded') {
+                scriptLoadHandler();
+            }
+        };
+      } else {
+        script_tag.onload = scriptLoadHandler;
+      }
+      // Try to find the head, otherwise default to the documentElement
+      (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
     } else {
-      script_tag.onload = scriptLoadHandler;
+      console.log("jquery was found");
+      // The jQuery version on the window is the one we want to use
+      jQuery = window.jQuery;
+      main();
     }
-    // Try to find the head, otherwise default to the documentElement
-    (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
-  } else {
-    console.log("jquery was found");
-    // The jQuery version on the window is the one we want to use
-    jQuery = window.jQuery;
-    main();
-  }
 
-  function scriptLoadHandler() {
-    // Restore $ and window.jQuery to their previous values and store the
-    // new jQuery in our local jQuery variable
-    jQuery = window.jQuery.noConflict(true);
-    // Call our main function
-    main();
+    function scriptLoadHandler() {
+      // Restore $ and window.jQuery to their previous values and store the
+      // new jQuery in our local jQuery variable
+      jQuery = window.jQuery.noConflict(true);
+
+      // Call our main function
+      main();
+    }
   }
 
   /* TUTORIAL PUBLIC CLASS DEFINITION
@@ -110,59 +117,37 @@
     init: function(type, options) {
       this.type = type;
       this.options = options;
-      this.element = this.getElement();
-      this.template = $('<div style="position: absolute;background-color: #151582;color: white;padding: .5em;" class="bubble"><div class="bubble-arrow"></div><div class="bubble-inner"></div></div>');
+      this.element = this.options.css_selector;
+      this.template = $('<div style="background-color: #151582;color: white;padding: .5em;" class="bubble">'
+                      + '<div class="bubble-arrow"></div><div class="bubble-inner"></div></div>');
     },
 
     show: function(next = false) {
-      var pos = this.getPosition(this.element[0]);
-      this.setPosition(pos);
+      if ($(this.element).css('display') === 'none') {
+        console.log("Element is not visible!");
+        return;
+      }
 
       if (this.options.content) {
         this.setContent(next);
       }
 
       $('body').append(this.template);
+
+      var reference = document.querySelector(this.element);
+      var popper = new Popper(reference, this.template[0], {
+          modifiers: {
+            preventOverflow: {
+                enabled: false
+            }
+          },
+        }
+      );
     },
 
     hide: function() {
       var $bubble = this.template;
       $bubble.detach();
-    },
-
-    getElement: function() {
-      if (!this.options.css_selector) {
-        console.log("no css selector found");
-        return;
-      }
-
-      var $element = $(this.options.css_selector);
-
-      if ($element.length > 1) {
-        $element = $element.first();
-      }
-
-      return $element;
-    },
-
-    getPosition: function(element) {
-      var position;
-      var elemRect = element.getBoundingClientRect();
-      position = {
-        top: elemRect.top + window.scrollY,
-        right: elemRect.right,
-        bottom: elemRect.bottom,
-        left: elemRect.left + window.scrollX,
-        Ymiddle: (elemRect.top + window.scrollY + elemRect.bottom) / 2,
-        Xmiddle: (elemRect.left + window.scrollX + elemRect.right) / 2
-      };
-
-      return position;
-    },
-
-    setPosition: function(pos) {
-      var $bubble = this.template;
-      $bubble.css({top: pos.Ymiddle, left: pos.right, display: 'block'});
     },
 
     setContent: function(next) {
