@@ -149,9 +149,7 @@
       var reference = document.querySelector(this.element);
       var popper = new Popper(reference, this.template[0], {
           onCreate: (data) => {
-            $('html, body').animate({
-              scrollTop: $(".bubble").offset().top - ($(window).height() / 3)
-            }, 800);
+            this.scroll();
           },
           onUpdate: (data) => {
             //actions when popper updated
@@ -191,6 +189,12 @@
       }
 
       $bubble.append($actionBtn);
+    },
+
+    scroll: function() {
+      $('html, body').animate({
+        scrollTop: $(".bubble").offset().top - ($(window).height() / 3)
+      }, 800);
     }
   }
 
