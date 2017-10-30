@@ -63,6 +63,11 @@
     start: function() {
       this.bindEvents();
 
+      if (this.alreadyCompleted()) {
+        console.log(this.options.name + " has already been completed.");
+        return;
+      }
+
       if (!this.options.active) {
         console.log(this.options.name + " is NOT active.");
         return;
@@ -102,8 +107,28 @@
       var index = this.tutorialItemIndex;
 
       tutorialItems[index].hide();
+      this.setCompletedCookies(this.options.id);
 
       stepThroughTutorials();
+    },
+
+    setCompletedCookies: function() {
+      var completedTutsArr = [];
+      if (document.cookie.replace(/(?:(?:^|.*;\s*)completedTutorials\s*\=\s*([^;]*).*$)|^.*$/, "$1") !== "") {
+        var completedTutsArr = JSON.parse(document.cookie.replace(/(?:(?:^|.*;\s*)completedTutorials\s*\=\s*([^;]*).*$)|^.*$/, "$1"));
+      }
+      
+      completedTutsArr.push(this.options.id);
+      document.cookie = 'completedTutorials=' + JSON.stringify(completedTutsArr) + ';expires=2018-01-01';
+    },
+
+    alreadyCompleted: function() {
+      if (document.cookie.replace(/(?:(?:^|.*;\s*)completedTutorials\s*\=\s*([^;]*).*$)|^.*$/, "$1") !== "") {
+        var completedTutsArr = JSON.parse(document.cookie.replace(/(?:(?:^|.*;\s*)completedTutorials\s*\=\s*([^;]*).*$)|^.*$/, "$1"));
+        return completedTutsArr.includes(this.options.id);
+      } else {
+        return false;
+      }
     },
 
     bindEvents: function() {
@@ -223,6 +248,7 @@
     var tutorialsArray = [];
 
     for (i = 0; i < dataArray.length; i++) {
+      dataArray[i]['attributes']['id'] = dataArray[i]['id'];
       var tutorial = new Tutorial(dataArray[i]['attributes']);
       var tutorialItemRelationships = dataArray[i]['relationships']['tutorial_items']['data'];
 
@@ -254,7 +280,7 @@
         });
         css_link.appendTo('head');          
 
-        var api_url = "http://api.stevenlocal.com:3000/v1/sites/1/tutorials";
+        var api_url = "http://api.stevenpslade.com/v1/sites/1/tutorials";
         $.getJSON(api_url, function(data) {
 
           if (data['data'].length === 0) {
