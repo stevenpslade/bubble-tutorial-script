@@ -46,6 +46,8 @@
   * =============================== */
 
   var Tutorial = function(options) {
+    this.tutorialItemIndex = 0;
+    this.bindEvents(options.id);
     this.init('tutorial', options);
   }
 
@@ -53,19 +55,16 @@
 
     constructor: Tutorial,
 
-    init: function(type, options) {
+    init: function(type, options, index) {
       this.type = type;
       this.options = options;
-      this.tutorialItemIndex = 0;
       this.tutorialItems = [];
     },
 
     start: function() {
-      this.bindEvents();
-
       if (this.alreadyCompleted()) {
         console.log(this.options.name + " has already been completed.");
-        return;
+        return "restart";
       }
 
       if (!this.options.active) {
@@ -93,6 +92,7 @@
     },
 
     nextTutorialItem: function() {
+      console.log(this.options.name);
       var tutorialItems = this.tutorialItems;
       var index = this.tutorialItemIndex;
 
@@ -131,12 +131,13 @@
       }
     },
 
-    bindEvents: function() {
+    bindEvents: function(id) {
+      var bubbleClass = '.bubble-' + id;
       //Next button action
-      $(document).on('click', '.bubble-action.action-next', this.nextTutorialItem.bind(this));
+      $(document).on('click', bubbleClass + ' .bubble-action.action-next', this.nextTutorialItem.bind(this));
 
       //Close button action
-      $(document).on('click', '.bubble-action.action-close', this.finishTutorial.bind(this));
+      $(document).on('click', bubbleClass + ' .bubble-action.action-close', this.finishTutorial.bind(this));
     }
     
   }
@@ -144,7 +145,8 @@
   /* TUTORIAL ITEM PUBLIC CLASS DEFINITION
   * =============================== */
 
-  var TutorialItem = function(options) {
+  var TutorialItem = function(tutorialId, options) {
+    this.tutorialId = tutorialId;
     this.init('tutorialItem', options);
   }
 
@@ -156,7 +158,7 @@
       this.type = type;
       this.options = options;
       this.element = this.options.css_selector;
-      this.template = $('<div class="bubble"><div class="bubble-arrow" x-arrow></div><div class="bubble-title"></div><div class="bubble-inner"></div></div>');
+      this.template = $('<div class="bubble bubble-' + this.tutorialId + '"><div class="bubble-arrow" x-arrow></div><div class="bubble-title"></div><div class="bubble-inner"></div></div>');
     },
 
     show: function(next = false) {
@@ -171,7 +173,8 @@
 
       $('body').append(this.template);
 
-      var reference = document.querySelector(this.element);
+      // var reference = document.querySelector(this.element);
+      var reference = $(this.element)[0];
       var popper = new Popper(reference, this.template[0], {
           onCreate: (data) => {
             this.scroll();
@@ -231,8 +234,12 @@
 
   function stepThroughTutorials() {
     if (_tutorialindex < _tutorialsArray.length) {
-      _tutorialsArray[_tutorialindex].start();
+      var runResult = _tutorialsArray[_tutorialindex].start();
       _tutorialindex++;
+
+      if (runResult === "restart") {
+        stepThroughTutorials();
+      }
     }
   }
 
@@ -259,7 +266,7 @@
           var relId = tutorialItemRelationships[t]['id'];
 
           if (relId === tutorialItemId) {
-            tutorial.tutorialItems.push(new TutorialItem(includedArray[j]['attributes']));
+            tutorial.tutorialItems.push(new TutorialItem(dataArray[i]['id'], includedArray[j]['attributes']));
           }
         }
       }
