@@ -281,16 +281,17 @@
   }
 
   function main() { 
-    jQuery(document).ready(function($) { 
+    jQuery(document).ready(function($) {
+        var siteId = $('#bubbleScript').attr("site_id");
         /******* Load CSS *******/
         var css_link = $("<link>", { 
             rel: "stylesheet", 
             type: "text/css", 
-            href: "../bubble_tutorial_script/style/tutorial.css" 
+            href: "https://s3-us-west-2.amazonaws.com/bubble-tutorial-script/bubble_tutorial_script/style/tutorial.css" 
         });
         css_link.appendTo('head');          
 
-        var api_url = "http://api.stevenpslade.com/v1/sites/1/tutorials";
+        var api_url = "http://api.stevenpslade.com/v1/sites/" + siteId + "/tutorials";
         $.getJSON(api_url, function(data) {
 
           if (data['data'].length === 0) {
