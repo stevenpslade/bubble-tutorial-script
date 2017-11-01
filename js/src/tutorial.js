@@ -184,9 +184,12 @@
           },
           modifiers: {
             preventOverflow: {
-                enabled: false
+                enabled: true
             },
             hide: {
+              enabled: false
+            },
+            flip: {
               enabled: false
             }
           },
