@@ -1,6 +1,8 @@
 .bubble {
   background-color: rgb(24, 123, 208);
+  box-shadow: 4px 4px 0px #0a375f;
   color: white;
+  max-width: 340px;
   padding: 0.8em 1.3em;
   border-radius: 0.5em;
   font-size: 1.3em;
@@ -39,7 +41,7 @@
   border-left-color: transparent;
   border-right-color: transparent;
   border-bottom-color: transparent;
-  bottom: -14%;
+  bottom: -21px;
 }
 
 .bubble[x-placement^="right"] .bubble-arrow {
@@ -55,7 +57,7 @@
   border-left-color: transparent;
   border-top-color: transparent;
   border-right-color: transparent;
-  top: -14%;
+  top: -21px;
 }
 
 .bubble[x-placement^="left"] .bubble-arrow {

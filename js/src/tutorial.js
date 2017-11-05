@@ -291,7 +291,7 @@
         });
         css_link.appendTo('head');          
 
-        var api_url = "http://api.stevenpslade.com/v1/sites/" + siteId + "/tutorials";
+        var api_url = "https://api.stevenpslade.com/v1/sites/" + siteId + "/tutorials";
         $.getJSON(api_url, function(data) {
 
           if (data['data'].length === 0) {
